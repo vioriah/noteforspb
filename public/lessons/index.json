@@ -1,0 +1,49 @@
+{
+  "welcome": "welcome.md",
+  "sections": [
+    {
+      "title": "I. Основы языка",
+      "lessons": [
+        { "id": "01-first", "file": "01-first-program.md", "desc": "Структура программы, print, компиляция, первые ошибки" },
+        { "id": "02-types", "file": "02-types.md", "desc": "Типы данных, kind, константы, арифметика, встроенные функции" },
+        { "id": "03-io", "file": "03-io.md", "desc": "read, write, форматы вывода, строки" },
+        { "id": "04-if", "file": "04-if.md", "desc": "Логические выражения, if, select case" },
+        { "id": "05-loops", "file": "05-loops.md", "desc": "do, do while, exit/cycle, суммы и ряды" }
+      ]
+    },
+    {
+      "title": "II. Массивы, процедуры, файлы",
+      "lessons": [
+        { "id": "06-arrays", "file": "06-arrays.md", "desc": "Одномерные массивы, срезы, sum/maxval, allocatable, статистика" },
+        { "id": "07-matrix", "file": "07-matrix.md", "desc": "Двумерные массивы, поля на сетке, matmul" },
+        { "id": "08-procedures", "file": "08-procedures.md", "desc": "function, subroutine, intent, массивы-аргументы" },
+        { "id": "09-modules", "file": "09-modules.md", "desc": "Модули, use, производные типы (type)" },
+        { "id": "10-files", "file": "10-files.md", "desc": "open/read/write/close, чтение до конца файла, iostat" }
+      ]
+    },
+    {
+      "title": "III. Численные методы",
+      "lessons": [
+        { "id": "11-roots", "file": "11-roots.md", "desc": "Половинное деление, метод Ньютона, дисперсия волн" },
+        { "id": "12-integrals", "file": "12-integrals.md", "desc": "Прямоугольники, трапеции, Симпсон, интеграл по профилю" },
+        { "id": "13-interp", "file": "13-interp.md", "desc": "Линейная интерполяция, МНК, тренды" },
+        { "id": "14-ode", "file": "14-ode.md", "desc": "Метод Эйлера, Рунге–Кутта, инерционные колебания" }
+      ]
+    },
+    {
+      "title": "IV. Океанологический практикум",
+      "lessons": [
+        { "id": "15-seawater", "file": "15-seawater.md", "desc": "Плотность (EOS-80), скорость звука, точка замерзания, N²" },
+        { "id": "16-ctd", "file": "16-ctd.md", "desc": "Обработка профиля CTD: ВКС, термоклин, стандартные горизонты" }
+      ]
+    },
+    {
+      "title": "Справочник",
+      "hideOnHome": true,
+      "lessons": [
+        { "id": "ref", "file": "reference.md", "title": "Шпаргалка по Фортрану" },
+        { "id": "sources", "file": "sources.md", "title": "Литература и источники" }
+      ]
+    }
+  ]
+}

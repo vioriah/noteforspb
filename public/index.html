@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ФортранЛаб — тренажёр по Фортрану для океанологов</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <button id="menu-btn" class="icon" title="Меню">☰</button>
+    <a class="brand" href="#/"><span class="logo">🌊</span><span class="brand-text"> Фортран<b>Лаб</b></span></a>
+    <div id="nb-title" class="nb-title"></div>
+    <div id="nb-actions" class="nb-actions"></div>
+    <span id="server-status" class="status">● …</span>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="progress-box">
+        <div id="progress" class="small"></div>
+        <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
+      </div>
+      <nav id="sidebar-content"></nav>
+    </aside>
+    <main id="main"><div class="muted center">Загрузка…</div></main>
+    <aside id="files-panel" class="files-panel" hidden></aside>
+  </div>
+  <script src="js/highlight.js"></script>
+  <script src="js/markdown.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/checker.js"></script>
+  <script src="js/lessons.js"></script>
+  <script src="js/hints.js"></script>
+  <script src="js/plot.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
