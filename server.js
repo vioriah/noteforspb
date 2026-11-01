@@ -37,6 +37,10 @@ const MIME = {
   '.txt': 'text/plain; charset=utf-8',
 };
 
+// prlimit есть только в Linux; на macOS/Windows работаем без него (остаётся ограничение по времени)
+const HAS_PRLIMIT = process.platform === 'linux' &&
+  require('child_process').spawnSync('prlimit', ['--version'], { stdio: 'ignore' }).status === 0;
+
 // ---------- очередь задач: не больше MAX_PARALLEL компиляций одновременно ----------
 let active = 0;
 const queue = [];
@@ -57,7 +61,7 @@ function withSlot(fn) {
 function runProcess(cmd, args, { cwd, input, timeoutMs, limits }) {
   return new Promise((resolve) => {
     let fullCmd = cmd, fullArgs = args;
-    if (limits) {
+    if (limits && HAS_PRLIMIT) {
       // prlimit: процессорное время, память, размер файлов
       fullArgs = [
         `--cpu=${Math.ceil(timeoutMs / 1000) + 1}`,
@@ -241,6 +245,7 @@ async function serveStatic(req, res) {
 
 let compilerVersion = 'unknown';
 runProcess(FC, ['--version'], { cwd: os.tmpdir(), timeoutMs: 5000 }).then((r) => {
+  if (!HAS_PRLIMIT) console.log('prlimit не найден: лимиты памяти не применяются, только таймаут');
   compilerVersion = (r.stdout.split('\n')[0] || r.stderr || 'gfortran не найден').trim();
   console.log('Компилятор:', compilerVersion);
 });
