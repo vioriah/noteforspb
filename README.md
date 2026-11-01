@@ -24,6 +24,16 @@ node server.js        # http://localhost:8080
 
 Переменные окружения: `PORT` (8080), `RUN_TIMEOUT_MS` (5000 — лимит времени работы программы), `MAX_PARALLEL` (число одновременных компиляций), `FC` (компилятор, по умолчанию `gfortran`), `ALLOW_SHELL=1` (разрешить `execute_command_line`/`system`; по умолчанию запрещены).
 
+### Windows без WSL
+
+1. Установите **Node.js LTS**: https://nodejs.org (установщик, все галочки по умолчанию).
+2. Установите **MSYS2**: https://www.msys2.org (установщик). Откройте из меню Пуск **MSYS2 UCRT64** и выполните: `pacman -S mingw-w64-ucrt-x86_64-gcc-fortran` (на вопросы отвечайте `Y`).
+3. Добавьте `C:\msys64\ucrt64\bin` в переменную среды `Path` (Пуск → «Изменение системных переменных среды» → Переменные среды → Path → Изменить → Создать).
+4. Откройте **новое** окно PowerShell и проверьте: `gfortran --version` и `node --version`.
+5. В папке проекта: `node server.js`, затем http://localhost:8080.
+
+На Windows лимиты памяти не применяются (остаётся таймаут), а программы линкуются статически.
+
 ### Docker
 
 ```bash

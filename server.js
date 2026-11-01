@@ -38,6 +38,8 @@ const MIME = {
 };
 
 // prlimit есть только в Linux; на macOS/Windows работаем без него (остаётся ограничение по времени)
+const IS_WIN = process.platform === 'win32';
+const EXE = IS_WIN ? 'prog.exe' : 'prog';
 const HAS_PRLIMIT = process.platform === 'linux' &&
   require('child_process').spawnSync('prlimit', ['--version'], { stdio: 'ignore' }).status === 0;
 
@@ -75,9 +77,11 @@ function runProcess(cmd, args, { cwd, input, timeoutMs, limits }) {
     const started = Date.now();
     const child = spawn(fullCmd, fullArgs, {
       cwd,
-      env: { PATH: process.env.PATH, HOME: cwd, LANG: 'C.UTF-8', GFORTRAN_UNBUFFERED_PRECONNECTED: 'y' },
+      env: IS_WIN
+        ? { ...process.env, GFORTRAN_UNBUFFERED_PRECONNECTED: 'y' }
+        : { PATH: process.env.PATH, HOME: cwd, LANG: 'C.UTF-8', GFORTRAN_UNBUFFERED_PRECONNECTED: 'y' },
       stdio: ['pipe', 'pipe', 'pipe'],
-      detached: true,
+      detached: !IS_WIN,
     });
     let stdout = Buffer.alloc(0), stderr = Buffer.alloc(0);
     let truncated = false, timedOut = false;
@@ -90,7 +94,7 @@ function runProcess(cmd, args, { cwd, input, timeoutMs, limits }) {
     };
     child.stdout.on('data', collect('out'));
     child.stderr.on('data', collect('err'));
-    const kill = () => { try { process.kill(-child.pid, 'SIGKILL'); } catch (_) { try { child.kill('SIGKILL'); } catch (_) {} } };
+    const kill = () => { try { if (IS_WIN) throw new Error('win'); process.kill(-child.pid, 'SIGKILL'); } catch (_) { try { child.kill('SIGKILL'); } catch (_) {} } };
     const timer = setTimeout(() => { timedOut = true; kill(); }, timeoutMs);
     child.on('error', (err) => {
       clearTimeout(timer);
@@ -160,7 +164,7 @@ async function handleRun(body) {
       for (const s of sources) await fsp.writeFile(path.join(dir, s.name), s.content);
       // Компиляция. Модули должны идти раньше программы — порядок задаёт клиент.
       const flags = ['-g', '-fcheck=all', '-fbacktrace', '-Wall', '-Wno-unused-dummy-argument', '-Wno-conversion', '-ffree-line-length-none'];
-      const compile = await runProcess(FC, [...flags, '-o', 'prog', ...sources.map((s) => s.name)], {
+      const compile = await runProcess(FC, [...flags, ...(IS_WIN ? ['-static'] : []), '-o', EXE, ...sources.map((s) => s.name)], {
         cwd: dir, timeoutMs: COMPILE_TIMEOUT_MS, limits: false,
       });
       const compileOk = compile.exitCode === 0 && !compile.timedOut;
@@ -178,7 +182,7 @@ async function handleRun(body) {
         const extra = Array.isArray(r.files) ? r.files.filter((f) => checkName(f.name) && typeof f.content === 'string') : [];
         for (const f of [...dataFiles, ...extra]) await fsp.writeFile(path.join(runDir, f.name), f.content);
         const before = await snapshotDir(runDir);
-        const res = await runProcess(path.join(dir, 'prog'), [], {
+        const res = await runProcess(path.join(dir, EXE), [], {
           cwd: runDir, input: typeof r.stdin === 'string' ? r.stdin : '', timeoutMs: RUN_TIMEOUT_MS, limits: true,
         });
         // Файлы, которые программа создала или изменила
